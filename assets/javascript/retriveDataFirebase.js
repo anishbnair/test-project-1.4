@@ -1,6 +1,23 @@
 
 
-// Firebase authentication using Google account Sign In
+// Array to hold city name and corresponding latitude and logitude
+var locations = [
+    ['Dubai', 25.0657005, 55.1712799],
+    // ['Interlaken', 46.5956802, 7.90765],
+    // ['Lauterbrunnen', 46.9480896, 7.4474401],
+    // ['Kathmandu', 27.7016907, 85.3206024],
+    // ['Cape Town', -33.9258385, 18.4232197],
+    ['Foz do Iguaçu', -25.5477791, -54.5880585],
+    ['Empuriabrava', 42.2469101, 3.12059],
+    ['Key West', 24.5552406, -81.7816315],
+    ['Waialua', 21.5768795, -158.131546]
+    // ['Fox Glacier', -43.46448, 170.017588] // 2 locations
+    // ['Queensland', -20.7252293, 139.4972687]
+    // ['Livingstone', -17.8419399, 25.85425] // Only one location and no location details
+    // ['Queenstown', -45.0302315, 168.6627045] // Many locations
+];
+
+
 var config = {
     // Project-1
     apiKey: "AIzaSyB14umVfdO698P_sUXR4J5Xkp755M0LqCA",
@@ -21,46 +38,60 @@ var config = {
 
 firebase.initializeApp(config);
 
-var provider = new firebase.auth.GoogleAuthProvider();
+// Create a variable to reference the database
+var database = firebase.database();
 
-$(document).on("click", ".signInBtn", function () {
-    console.log("Sign In button clicked");
-    firebase.auth().signInWithPopup(provider).then(function (result) {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        var token = result.credential.accessToken;
-        console.log(token);
-        // The signed-in user info.
-        var user = result.user;
-        console.log(user);
-        // window.location = '/test-project-1.2/map.html';
-        // window.location = 'https://anishbnair.github.io/test-project-1.2/map.html';
+// var cityInfo = {
+//     name: 'Mombasa',
+//     lat: -4.0546598,
+//     lon: 39.6635895,
+// }
 
-        // ...
-    }).catch(function (error) {
-        // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        console.log(errorMessage);
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
-        // ...
+// Uploads data to firebase database
+
+// database.ref().push(cityInfo);
+var returnArr = [];
+// This event will be triggered once for each initial child at this location, and it will be triggered again every time a new child is added
+// database.ref().on("value", function (snapshot) {
+//     // storing the snapshot.val() in a variable for convenience
+//     var cityDetails = snapshot.val();
+//     console.log(cityDetails);
+//     var x = cityDetails.name;
+//     console.log(x);
+
+//     // Handle the errors
+// }, function (errorObject) {
+//     console.log("Errors handled: " + errorObject.code);
+// });
+
+function snapshotToArray(snapshot) {
+    // var returnArr = [];
+
+    snapshot.forEach(function (childSnapshot) {
+        var item = childSnapshot.val();
+        item.key = childSnapshot.key;
+
+        returnArr.push(item);
     });
-    $(this).removeClass('signIn')
-        .addClass('signOut')
-        .html('Sign Out Of Google');
-});
 
-$(document).on('click', '.signInBtn', function () {
-    firebase.auth().signOut().then(function () {
-        // Sign-out successful.
-        // window.location = '/index.html';
-        // window.location = 'https://anishbnair.github.io/test-project-1.2/';
-    }).catch(function (error) {
-        // An error happened.
-    });
-    $(this).removeClass('signOut')
-        .addClass('signIn')
-        .html('Sign In with Google');
+    return returnArr;
+};
+
+// database.ref().on('value', function(snapshot) {
+//     var cityDetails = snapshot.val();
+//     console.log(cityDetails);
+//     console.log(snapshotToArray(snapshot));
+// });
+
+database.ref().on("child_added", function (snapshot) {
+    // storing the snapshot.val() in a variable for convenience
+    var trainDatabaseValue = snapshot.val();
+    console.log("Train database value is " + trainDatabaseValue);
+
+    var trainName = trainDatabaseValue.trainName;
+
+
+    // Handle the errors
+}, function (errorObject) {
+    console.log("Errors handled: " + errorObject.code);
 });
