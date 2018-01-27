@@ -9,21 +9,13 @@ var config = {
     projectId: "project1-firebase-auth",
     storageBucket: "project1-firebase-auth.appspot.com",
     messagingSenderId: "558796916951"
-
-    // Train Scheduler
-    // apiKey: "AIzaSyCblT2nfpwzw2HumOPzdQOh3tLuOvozyiE",
-    // authDomain: "bootcamp-learning.firebaseapp.com",
-    // databaseURL: "https://bootcamp-learning.firebaseio.com",
-    // projectId: "bootcamp-learning",
-    // storageBucket: "bootcamp-learning.appspot.com",
-    // messagingSenderId: "1031333562864"
 };
 
 firebase.initializeApp(config);
 
 var provider = new firebase.auth.GoogleAuthProvider();
 
-$(document).on("click", ".signInBtn", function () {
+$(document).on("click", ".signIn", function () {
     console.log("Sign In button clicked");
     firebase.auth().signInWithPopup(provider).then(function (result) {
         // This gives you a Google Access Token. You can use it to access the Google API.
@@ -52,7 +44,7 @@ $(document).on("click", ".signInBtn", function () {
         .html('Sign Out Of Google');
 });
 
-$(document).on('click', '.signInBtn', function () {
+$(document).on('click', '.signOut', function () {
     firebase.auth().signOut().then(function () {
         // Sign-out successful.
         // window.location = '/index.html';
